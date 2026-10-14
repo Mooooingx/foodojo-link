@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FOODOJO ▶ YouTube</title>
+<meta property="og:title" content="FOODOJO ▶ YouTubeで見る">
+<meta property="og:description" content="タップするとYouTubeアプリで開きます">
+<style>
+  body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:#111;color:#fff;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center}
+  .box{width:min(92vw,460px);padding:28px 20px}
+  h1{font-size:22px;margin:0 0 6px}
+  p{color:#bbb;font-size:14px;line-height:1.6}
+  .btn{display:block;margin:18px 0 10px;padding:18px;border-radius:14px;background:#ff0033;color:#fff;
+       font-size:19px;font-weight:700;text-decoration:none}
+  .sub{color:#aaa;font-size:14px}
+  input{width:100%;box-sizing:border-box;padding:14px;border-radius:10px;border:0;font-size:15px}
+  .out{margin-top:14px;padding:12px;background:#222;border-radius:10px;word-break:break-all;font-size:14px}
+  button{margin-top:10px;padding:12px 18px;border:0;border-radius:10px;font-size:15px;font-weight:700}
+  .hint{margin-top:22px;color:#888;font-size:12px}
+</style>
+</head>
+<body>
+<div class="box" id="app"></div>
+<script>
+// ── 自分版URLgenius ──
+// ① リンクを開いた人：?v=動画ID（または ?c=@チャンネル）があれば、YouTubeアプリを開く
+// ② パラメータなし：YouTubeのURLを貼ると「アプリで開くリンク」を作る画面
+(function () {
+  var q = new URLSearchParams(location.search);
+  var v = q.get('v'), c = q.get('c');
+  var app = document.getElementById('app');
+  var ua = navigator.userAgent;
+  var isAndroid = /Android/i.test(ua), isIOS = /iPhone|iPad|iPod/i.test(ua);
+
+  if (v || c) {
+    var path = v ? 'watch?v=' + encodeURIComponent(v) : encodeURIComponent(c).replace('%40', '@');
+    var web = 'https://www.youtube.com/' + path;
+    var appUrl;
+    if (isAndroid) {
+      appUrl = 'intent://www.youtube.com/' + path +
+        '#Intent;package=com.google.android.youtube;scheme=https;S.browser_fallback_url=' +
+        encodeURIComponent(web) + ';end';
+    } else if (isIOS) {
+      appUrl = 'youtube://www.youtube.com/' + path;
+    } else {
+      location.replace(web); return;            // パソコンはそのままYouTubeへ
+    }
+    app.innerHTML =
+      '<h1>FOODOJO ▶ YouTube</h1>' +
+      '<p>YouTubeアプリを開いています…<br>開かない時は下のボタンを押してください</p>' +
+      '<a class="btn" href="' + appUrl + '">YouTubeアプリで見る</a>' +
+      '<a class="sub" href="' + web + '">ブラウザで見る</a>';
+    location.href = appUrl;                     // まず自動で開く
+    if (isIOS) {                                // iPhoneで開かなかった時はブラウザへ
+      var t = setTimeout(function () { if (!document.hidden) location.href = web; }, 2500);
+      document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(t); });
+    }
+    return;
+  }
+
+  // ── リンクを作る画面 ──
+  app.innerHTML =
+    '<h1>YouTubeアプリで開くリンクを作る</h1>' +
+    '<p>YouTubeの動画・ショート・チャンネルのURLを貼ってください</p>' +
+    '<input id="u" placeholder="https://youtu.be/xxxx や https://www.youtube.com/@foodojo">' +
+    '<div class="out" id="o">ここにリンクが出ます</div>' +
+    '<button id="b">コピー</button>' +
+    '<div class="hint">できたリンクをManychatのDMやプロフィールに貼ってください。<br>まず自分のスマホで、インスタのDMからタップして試してね。</div>';
+  var base = location.origin + location.pathname;
+  function make(s) {
+    s = s.trim(); var m;
+    if ((m = s.match(/(?:youtu\.be\/|v=|\/shorts\/|\/live\/|\/embed\/)([\w-]{11})/))) return base + '?v=' + m[1];
+    if ((m = s.match(/youtube\.com\/(@[\w.\-]+)/))) return base + '?c=' + m[1];
+    if ((m = s.match(/^[\w-]{11}$/))) return base + '?v=' + m[0];
+    return '';
+  }
+  var u = document.getElementById('u'), o = document.getElementById('o');
+  u.addEventListener('input', function () { o.textContent = make(u.value) || 'YouTubeのURLを貼ってください'; });
+  document.getElementById('b').addEventListener('click', function () {
+    var link = make(u.value); if (!link) return;
+    navigator.clipboard.writeText(link).then(function () { document.getElementById('b').textContent = 'コピーしました！'; });
+  });
+})();
+</script>
+</body>
+</html>
