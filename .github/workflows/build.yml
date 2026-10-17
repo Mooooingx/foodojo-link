@@ -1,7 +1,7 @@
 name: build video pages
 on:
   schedule:
-    - cron: '*/15 * * * *'   # 15分ごと
+    - cron: '*/5 * * * *'   # 5分ごと
   workflow_dispatch:
   push:
     paths: ['index.html', 'ids.txt', 'build_pages.py']
