@@ -57,7 +57,20 @@ var CHANNEL = '@foodojo';
   // 古い形（?v=動画ID）は短い形に移す。FOODOJOの動画ならそのページが開く
   if (!VIDEO_ID && /^[\w-]{11}$/.test(q.get('v') || '')) { location.replace('/' + q.get('v')); return; }
 
-  var v = VIDEO_ID;
+  // まだページがない動画（公開したばかり）：YouTubeに聞いてFOODOJOの動画ならすぐ開く。他のチャンネルならFOODOJOのチャンネルへ
+  if (!VIDEO_ID && /^[\w-]{11}$/.test(slug)) {
+    var done = false;
+    var finish = function (ok) { if (!done) { done = true; start(ok ? slug : ''); } };
+    fetch('https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=' + slug)
+      .then(function (r) { return r.json(); })
+      .then(function (j) { finish(/\/@foodojo$/i.test(j.author_url || '')); })
+      .catch(function () { finish(true); });
+    setTimeout(function () { finish(true); }, 2500);
+    return;
+  }
+  start(VIDEO_ID);
+
+  function start(v) {
   var path = v ? 'watch?v=' + v : CHANNEL;
   var web = 'https://www.youtube.com/' + path;
   var info = { link: slug || 'top', video: v || CHANNEL, device: device };
@@ -100,6 +113,7 @@ var CHANNEL = '@foodojo';
       document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(t); });
     }
   });
+  }
 })();
 </script>
 </body>
