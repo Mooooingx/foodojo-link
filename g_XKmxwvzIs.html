@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>広蔵市場に新しくオープンしたスターバックスに行ってみた‼️(クァンジャン市場) #韓国vlog #韓国旅行 #広蔵市場 #韓国グルメ #韓国スタバ #광장시장</title>
+<!--OG-->
+<meta property="og:type" content="video.other">
+<meta property="og:site_name" content="FOODOJO">
+<meta property="og:title" content="広蔵市場に新しくオープンしたスターバックスに行ってみた‼️(クァンジャン市場) #韓国vlog #韓国旅行 #広蔵市場 #韓国グルメ #韓国スタバ #광장시장">
+<meta property="og:description" content="タップするとYouTubeアプリで開きます">
+<meta property="og:image" content="https://i.ytimg.com/vi/g_XKmxwvzIs/maxresdefault.jpg">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="720">
+<meta property="og:url" content="https://foodojo.link/g_XKmxwvzIs">
+<meta name="twitter:card" content="summary_large_image">
+<!--/OG-->
+<style>
+  body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:#111;color:#fff;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center}
+  .box{width:min(92vw,460px);padding:28px 20px}
+  h1{font-size:22px;margin:0 0 6px}
+  p{color:#bbb;font-size:14px;line-height:1.6}
+  .btn{display:block;margin:18px 0 10px;padding:18px;border-radius:14px;background:#ff0033;color:#fff;
+       font-size:19px;font-weight:700;text-decoration:none}
+  .sub{color:#aaa;font-size:14px}
+  .note{position:fixed;bottom:8px;left:0;right:0;color:#555;font-size:10px}
+</style>
+<!-- Googleアナリティクス（GA4） -->
+<script>
+  var GA_ID = 'G-QDD5VCFLEY';
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  var s = document.createElement('script'); s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+  document.head.appendChild(s);
+  gtag('js', new Date()); gtag('config', GA_ID);
+</script>
+</head>
+<body>
+<div class="box" id="app"></div>
+<div class="note">このページはGoogleアナリティクスでクリック数を数えています</div>
+<script>
+// ── FOODOJO専用のYouTubeアプリで開くリンク ──
+// foodojo.link/動画ID のページは build_pages.py が FOODOJO の動画だけ自動で作る（VIDEO_ID が入る）
+// それ以外（トップ・知らない動画・他のチャンネル）は FOODOJO のチャンネルを開く
+var VIDEO_ID = 'g_XKmxwvzIs';
+var CHANNEL = '@foodojo';
+(function () {
+  var app = document.getElementById('app');
+  var ua = navigator.userAgent;
+  var isAndroid = /Android/i.test(ua), isIOS = /iPhone|iPad|iPod/i.test(ua);
+  var device = isIOS ? 'iphone' : isAndroid ? 'android' : 'pc';
+  var slug = decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g, '').replace(/\.html$/, ''));
+  var q = new URLSearchParams(location.search);
+
+  // 古い形（?v=動画ID）は短い形に移す。FOODOJOの動画ならそのページが開く
+  if (!VIDEO_ID && /^[\w-]{11}$/.test(q.get('v') || '')) { location.replace('/' + q.get('v')); return; }
+
+  // まだページがない動画（公開したばかり）：YouTubeに聞いてFOODOJOの動画ならすぐ開く。他のチャンネルならFOODOJOのチャンネルへ
+  if (!VIDEO_ID && /^[\w-]{11}$/.test(slug)) {
+    var done = false;
+    var finish = function (ok) { if (!done) { done = true; start(ok ? slug : ''); } };
+    fetch('https://www.youtube.com/oembed?format=json&url=https://www.youtube.com/watch?v=' + slug)
+      .then(function (r) { return r.json(); })
+      .then(function (j) { finish(/\/@foodojo$/i.test(j.author_url || '')); })
+      .catch(function () { finish(true); });
+    setTimeout(function () { finish(true); }, 2500);
+    return;
+  }
+  start(VIDEO_ID);
+
+  function start(v) {
+  var path = v ? 'watch?v=' + v : CHANNEL;
+  var web = 'https://www.youtube.com/' + path;
+  var info = { link: slug || 'top', video: v || CHANNEL, device: device };
+
+  function track(name, params, done) {          // Googleに送り終わってから移動（最大1.5秒待つ）
+    var called = false;
+    function go() { if (!called) { called = true; if (done) done(); } }
+    params.transport_type = 'beacon';
+    params.event_callback = go;
+    gtag('event', name, params);
+    setTimeout(go, 1500);
+  }
+
+  var appUrl;
+  if (isAndroid) {
+    appUrl = 'intent://www.youtube.com/' + path +
+      '#Intent;package=com.google.android.youtube;scheme=https;S.browser_fallback_url=' +
+      encodeURIComponent(web) + ';end';
+  } else if (isIOS) {
+    appUrl = 'youtube://www.youtube.com/' + path;
+  } else {
+    track('open_link', info, function () { location.replace(web); });   // パソコンはそのままYouTubeへ
+    return;
+  }
+  app.innerHTML =
+    '<h1>FOODOJO ▶ YouTube</h1>' +
+    '<p>YouTubeアプリを開いています…<br>開かない時は下のボタンを押してください</p>' +
+    '<a class="btn" id="appbtn" href="' + appUrl + '">YouTubeアプリで見る</a>' +
+    '<a class="sub" id="webbtn" href="' + web + '">ブラウザで見る</a>';
+  document.getElementById('appbtn').addEventListener('click', function () {
+    gtag('event', 'tap_app_button', { link: info.link, video: info.video, device: device, transport_type: 'beacon' });
+  });
+  document.getElementById('webbtn').addEventListener('click', function () {
+    gtag('event', 'tap_browser_button', { link: info.link, video: info.video, device: device, transport_type: 'beacon' });
+  });
+  track('open_link', info, function () {
+    location.href = appUrl;                       // まず自動で開く
+    if (isIOS) {                                  // iPhoneで開かなかった時はブラウザへ
+      var t = setTimeout(function () { if (!document.hidden) location.href = web; }, 2500);
+      document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(t); });
+    }
+  });
+  }
+})();
+</script>
+</body>
+</html>
