@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FOODOJO ▶ YouTube</title>
+<!--OG-->
 <meta property="og:title" content="FOODOJO ▶ YouTubeで見る">
 <meta property="og:description" content="タップするとYouTubeアプリで開きます">
+<!--/OG-->
 <style>
   body{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:#111;color:#fff;
        min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center}
@@ -52,7 +54,7 @@ var LINKS = {
   var device = isIOS ? 'iphone' : isAndroid ? 'android' : 'pc';
 
   // 開くもの（動画 or チャンネル）を決める
-  var slug = decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g, ''));
+  var slug = decodeURIComponent(location.pathname.replace(/^\/+|\/+$/g, '').replace(/\.html$/, ''));
   var q = new URLSearchParams(location.search);
   var v = q.get('v'), c = q.get('c');            // 古い形 ?v= ?c= もそのまま使える
   if (!v && !c && slug) {
@@ -61,13 +63,13 @@ var LINKS = {
     else if (/^@[\w.\-]+$/.test(slug)) c = slug;
   }
 
-  function track(name, params, done) {          // 送ってから移動（最大0.6秒待つ）
+  function track(name, params, done) {          // Googleに送り終わってから移動（最大1.5秒待つ）
     var called = false;
     function go() { if (!called) { called = true; if (done) done(); } }
     params.transport_type = 'beacon';
     params.event_callback = go;
     gtag('event', name, params);
-    setTimeout(go, 600);
+    setTimeout(go, 1500);
   }
 
   if (v || c) {
