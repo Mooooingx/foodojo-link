@@ -3,6 +3,7 @@
 import glob, html, json, os, re, urllib.request
 
 CHANNELS = ['UCBFPVZG3M0O7EIjdOsUW_Cg']   # FOODOJO (miyu)
+CHANNEL_IMAGE = 'https://yt3.googleusercontent.com/6RfbwRP4JDNfI8rQxYOFeVFCSf0MkROYD3sIXDyODpUhWa7fGDCs4lFvXH2u1WFK0iGHV_AwNw=s900-c-k-c0x00ffffff-no-rj'
 ROOT = os.path.dirname(os.path.abspath(__file__))
 UA = {'User-Agent': 'Mozilla/5.0 (foodojo.link builder)'}
 
@@ -69,6 +70,18 @@ def info(v):
 def main():
     tpl = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
     open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8').write(tpl)   # 404.htmlはいつもindex.htmlと同じ
+    # インスタのプロフィール用：foodojo.link/youtube → FOODOJOのチャンネルを開く
+    ch_og = ('<!--OG-->\n'
+             '<meta property="og:type" content="website">\n'
+             '<meta property="og:site_name" content="FOODOJO">\n'
+             '<meta property="og:title" content="FOODOJO (miyu) - YouTube">\n'
+             '<meta property="og:description" content="タップするとYouTubeアプリで開きます">\n'
+             '<meta property="og:image" content="%s">\n'
+             '<meta property="og:url" content="https://foodojo.link/youtube">\n'
+             '<!--/OG-->') % CHANNEL_IMAGE
+    ch = re.sub(r'<!--OG-->.*?<!--/OG-->', lambda m: ch_og, tpl, flags=re.S)
+    ch = ch.replace('<title>FOODOJO ▶ YouTube</title>', '<title>FOODOJO (miyu) - YouTube</title>')
+    open(os.path.join(ROOT, 'youtube.html'), 'w', encoding='utf-8').write(ch)
     for v in video_ids():
         title, image = info(v)
         t = html.escape(title, quote=True)
