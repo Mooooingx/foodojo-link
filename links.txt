@@ -1,3 +1,4 @@
 # アゴダなどの短いリンク：短い名前 | URL | 表示する名前 | 動画ID(任意・サムネに使う)
-# 短い名前は英小文字・数字・ハイフンだけ（11文字ちょうどはNG）。例：
-# henna-myeongdong | https://www.agoda.com/... | 変なホテル ソウル明洞 | Izp7u3u6ues
+# 短い名前は英小文字・数字・ハイフンだけ（11文字ちょうどはNG）
+mirior-myeongdong | https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1939950&hl=ja-jp&hid=1120227 | ミリオレホテルソウル明洞 |
+henna-myeongdong | https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1939950&hl=ja-jp&hid=22137582 | 変なホテル ソウル明洞 | Izp7u3u6ues
