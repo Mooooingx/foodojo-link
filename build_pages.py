@@ -1,6 +1,6 @@
 # FOODOJOの動画ごとに「foodojo.link/動画ID」のページを作る（インスタでサムネが出る・FOODOJOの動画だけ開ける）
 # GitHub Actionsが15分ごとに自動で動かす。FOODOJO以外や古い動画を足したい時は ids.txt に1行1つURLを書く。
-import glob, html, json, os, re, urllib.request
+import glob, html, json, os, re, urllib.parse, urllib.request
 
 CHANNELS = ['UCBFPVZG3M0O7EIjdOsUW_Cg']   # FOODOJO (miyu)
 CHANNEL_IMAGE = 'https://yt3.googleusercontent.com/6RfbwRP4JDNfI8rQxYOFeVFCSf0MkROYD3sIXDyODpUhWa7fGDCs4lFvXH2u1WFK0iGHV_AwNw=s900-c-k-c0x00ffffff-no-rj'
@@ -67,6 +67,67 @@ def info(v):
     return title, image
 
 
+# ---- アゴダなど外のサイトへの短いリンク（links.txt：短い名前 | URL | 表示する名前 | 動画ID(任意)）
+LINK_TPL = """<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{t}</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="FOODOJO">
+<meta property="og:title" content="{t}">
+<meta property="og:description" content="タップすると{site}で開きます">
+{img}<meta property="og:url" content="https://foodojo.link/{slug}">
+<meta http-equiv="refresh" content="3;url={u}">
+<style>
+  body{{margin:0;font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:#111;color:#fff;
+       min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center}}
+  .box{{width:min(92vw,460px);padding:28px 20px}} h1{{font-size:20px}} p{{color:#bbb;font-size:14px}}
+  .btn{{display:block;margin:18px 0;padding:18px;border-radius:14px;background:#ff0033;color:#fff;font-size:19px;font-weight:700;text-decoration:none}}
+  .note{{position:fixed;bottom:8px;left:0;right:0;color:#555;font-size:10px}}
+</style>
+<script>
+  var GA_ID = 'G-QDD5VCFLEY'; window.dataLayer = window.dataLayer || []; function gtag(){{dataLayer.push(arguments);}}
+  var s = document.createElement('script'); s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+  document.head.appendChild(s); gtag('js', new Date()); gtag('config', GA_ID);
+</script>
+</head>
+<body>
+<div class="box"><h1>{t}</h1><p>{site}を開いています…</p><a class="btn" href="{u}">{site}で見る</a></div>
+<div class="note">このページはGoogleアナリティクスでクリック数を数えています</div>
+<script>
+  var go = function () {{ location.replace({uj}); }}, done = false;
+  gtag('event', 'open_link', {{ link: '{slug}', video: 'link:{slug}', dest: '{site}', transport_type: 'beacon', event_callback: function () {{ if (!done) {{ done = true; go(); }} }} }});
+  setTimeout(function () {{ if (!done) {{ done = true; go(); }} }}, 1200);
+</script>
+</body>
+</html>
+"""
+
+def build_links():
+    p = os.path.join(ROOT, 'links.txt')
+    if not os.path.exists(p): return
+    for line in open(p, encoding='utf-8'):
+        line = line.strip()
+        if not line or line.startswith('#'): continue
+        parts = [x.strip() for x in line.split('|')]
+        if len(parts) < 2 or not re.fullmatch(r'[a-z0-9][a-z0-9-]{1,40}', parts[0]) or len(parts[0]) == 11:
+            print('skip link', line); continue
+        slug, url = parts[0], parts[1]
+        title = parts[2] if len(parts) > 2 and parts[2] else 'FOODOJO'
+        vid = parts[3] if len(parts) > 3 else ''
+        host = re.sub(r'^www\.', '', urllib.parse.urlparse(url).netloc)
+        site = 'アゴダ' if 'agoda' in host else ('楽天トラベル' if 'rakuten' in host else ('Booking.com' if 'booking' in host else host))
+        img = ''
+        if re.fullmatch(r'[\w-]{11}', vid):
+            img = '<meta property="og:image" content="https://i.ytimg.com/vi/%s/hqdefault.jpg">\n' % vid
+        page = LINK_TPL.format(t=html.escape(title + '｜' + site + 'で見る', quote=True), site=html.escape(site), img=img,
+                               slug=slug, u=html.escape(url, quote=True), uj=json.dumps(url))
+        open(os.path.join(ROOT, slug + '.html'), 'w', encoding='utf-8').write(page)
+        print('link', slug, '->', host)
+
+
 def main():
     tpl = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
     open(os.path.join(ROOT, '404.html'), 'w', encoding='utf-8').write(tpl)   # 404.htmlはいつもindex.htmlと同じ
@@ -82,6 +143,7 @@ def main():
     ch = re.sub(r'<!--OG-->.*?<!--/OG-->', lambda m: ch_og, tpl, flags=re.S)
     ch = ch.replace('<title>FOODOJO ▶ YouTube</title>', '<title>FOODOJO (miyu) - YouTube</title>')
     open(os.path.join(ROOT, 'youtube.html'), 'w', encoding='utf-8').write(ch)
+    build_links()
     for v in video_ids():
         title, image = info(v)
         t = html.escape(title, quote=True)
