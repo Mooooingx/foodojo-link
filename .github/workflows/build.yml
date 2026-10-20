@@ -4,7 +4,7 @@ on:
     - cron: '*/5 * * * *'   # 5分ごと
   workflow_dispatch:
   push:
-    paths: ['index.html', 'ids.txt', 'build_pages.py']
+    paths: ['index.html', 'ids.txt', 'links.txt', 'build_pages.py']
 permissions:
   contents: write
 jobs:
