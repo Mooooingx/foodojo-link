@@ -2,4 +2,5 @@
 # 短い名前は英小文字・数字・ハイフンだけ（11文字ちょうどはNG）
 mirior-myeongdong | https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1939950&hl=ja-jp&hid=1120227 | ミリオレホテルソウル明洞 |
 henna-myeongdong | https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1939950&hl=ja-jp&hid=22137582 | 変なホテル ソウル明洞 | Izp7u3u6ues
-voco-myeongdong | https://expedia.com/affiliate/u4a2mgm | voco ソウル明洞 |
+voco-myeongdong | https://www.agoda.com/partners/partnersearch.aspx?pcs=1&cid=1939950&hl=ja-jp&hid=1193567 | voco ソウル明洞 |
+voco-expedia | https://expedia.com/affiliate/u4a2mgm | voco ソウル明洞（エクスペディア） |
