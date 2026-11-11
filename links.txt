@@ -8,3 +8,4 @@ splaisir-myeongdong | https://www.agoda.com/partners/partnersearch.aspx?pcs=1&ci
 splaisir-expedia | https://expedia.stay22.com/foodojo/M39b6DLPQ7 | 相鉄ホテルズ ザ・スプラジール ソウル明洞（エクスペディア） |
 splaisir-trip | https://trip.stay22.com/foodojo/TiMiVLtTzw | 相鉄ホテルズ ザ・スプラジール ソウル明洞（Trip.com） |
 splaisir-booking | https://booking.stay22.com/foodojo/LC3KN3LOlb | 相鉄ホテルズ ザ・スプラジール ソウル明洞（Booking.com） |
+grandmonday-maihama | https://go.stay22.com/foodojo/Kt0bzllTts | GRAND MONdayリゾート 東京ベイ舞浜 | uOZ0xVrkR94
